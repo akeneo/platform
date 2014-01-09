@@ -38,7 +38,7 @@
         "escapestudios/wsse-authentication-bundle": "dev-master#abe4b7c41d1890d16abda26b285e6e5417952645",
         "liip/imagine-bundle": "dev-master",
         "leafo/lessphp": "dev-master",
-        "willdurand/expose-translation-bundle": ">=1.1.*",
+        "willdurand/expose-translation-bundle": "1.1.*",
         "genemu/form-bundle": "2.2.*",
         "zendframework/zend-mail": "2.1.*",
         "a2lix/translation-form-bundle" : "1.*@dev",
