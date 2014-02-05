@@ -34,7 +34,7 @@
         "besimple/soap-bundle": "dev-master",
         "besimple/soap-wsdl": "dev-master",
         "stof/doctrine-extensions-bundle": "1.1.0",
-        "escapestudios/wsse-authentication-bundle": "dev-master#abe4b7c41d1890d16abda26b285e6e5417952645",
+        "escapestudios/wsse-authentication-bundle": "2.3.x-dev#ac3f700a88966e6483ff84d5de2b751d7622736d",
         "liip/imagine-bundle": "0.17.*",
         "leafo/lessphp": "0.4.0",
         "willdurand/expose-translation-bundle": "1.2.1",
