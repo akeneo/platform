@@ -41,16 +41,8 @@
         "mtdowling/cron-expression": "1.0.3",
         "jdare/clank-bundle": "0.1.6",
         "lexik/maintenance-bundle": "1.0.2",
-        "sylius/flow-bundle": "0.6.0",
-        "gedmo/doctrine-extensions": "2.3.x-dev#097fdcfccac5df4619a91564d451c866a35e9358"
+        "sylius/flow-bundle": "0.6.0"
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/akeneo/DoctrineExtensions.git",
-            "branch": "master"
-        }
-    ],
     "minimum-stability": "dev",
     "prefer-stable": true,
     "autoload": {
