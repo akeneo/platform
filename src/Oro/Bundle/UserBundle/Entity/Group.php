@@ -9,30 +9,9 @@ use Doctrine\Common\Collections\Collection;
 use JMS\Serializer\Annotation\Type;
 use JMS\Serializer\Annotation\Exclude;
 
-use BeSimple\SoapBundle\ServiceDefinition\Annotation as Soap;
-
-use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
-
-use Oro\Bundle\OrganizationBundle\Entity\BusinessUnit;
-
 /**
  * @ORM\Entity(repositoryClass="Oro\Bundle\UserBundle\Entity\Repository\GroupRepository")
  * @ORM\Table(name="oro_access_group")
- * @Config(
- *      routeName="oro_user_group_index",
- *      defaultValues={
- *          "entity"={"label"="Group", "plural_label"="Groups"},
- *          "ownership"={
- *              "owner_type"="BUSINESS_UNIT",
- *              "owner_field_name"="owner",
- *              "owner_column_name"="business_unit_owner_id"
- *          },
- *          "security"={
- *              "type"="ACL",
- *              "group_name"=""
- *          }
- *      }
- * )
  */
 class Group
 {
@@ -40,14 +19,12 @@ class Group
      * @ORM\Id
      * @ORM\Column(type="smallint", name="id")
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Soap\ComplexType("int", nillable=true)
      * @Type("integer")
      */
     protected $id;
 
     /**
      * @ORM\Column(type="string", unique=true, length=30, nullable=false)
-     * @Soap\ComplexType("string")
      * @Type("string")
      */
     protected $name;
@@ -61,14 +38,6 @@ class Group
      * @Exclude
      */
     protected $roles;
-
-    /**
-     * @var BusinessUnit
-     * @ORM\ManyToOne(targetEntity="Oro\Bundle\OrganizationBundle\Entity\BusinessUnit")
-     * @ORM\JoinColumn(name="business_unit_owner_id", referencedColumnName="id", onDelete="SET NULL")
-     * @Soap\ComplexType("string", nillable=true)
-     */
-    protected $owner;
 
     /**
      * @param string $name [optional] Group name
@@ -222,25 +191,6 @@ class Group
                 '$roles must be an instance of Doctrine\Common\Collections\Collection or an array'
             );
         }
-
-        return $this;
-    }
-
-    /**
-     * @return BusinessUnit
-     */
-    public function getOwner()
-    {
-        return $this->owner;
-    }
-
-    /**
-     * @param BusinessUnit $owningBusinessUnit
-     * @return Group
-     */
-    public function setOwner($owningBusinessUnit)
-    {
-        $this->owner = $owningBusinessUnit;
 
         return $this;
     }

@@ -13,28 +13,7 @@ use Doctrine\Common\Collections\Collection;
 use JMS\Serializer\Annotation\Type;
 use JMS\Serializer\Annotation\Exclude;
 
-use BeSimple\SoapBundle\ServiceDefinition\Annotation as Soap;
-
-use Oro\Bundle\DataAuditBundle\Metadata\Annotation as Oro;
-
-use Oro\Bundle\EmailBundle\Entity\EmailOwnerInterface;
-use Oro\Bundle\EmailBundle\Model\EmailHolderInterface;
-
-use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
-
-use Oro\Bundle\ImapBundle\Entity\ImapEmailOrigin;
-use Oro\Bundle\ImapBundle\Entity\ImapConfigurationOwnerInterface;
-
 use Oro\Bundle\LocaleBundle\Model\FullNameInterface;
-
-use Oro\Bundle\OrganizationBundle\Entity\BusinessUnit;
-
-use Oro\Bundle\TagBundle\Entity\Taggable;
-use Oro\Bundle\TagBundle\Entity\Tag;
-
-use Oro\Bundle\UserBundle\Entity\Status;
-use Oro\Bundle\UserBundle\Entity\Email;
-use Oro\Bundle\UserBundle\Entity\EntityUploadedImageInterface;
 
 use DateTime;
 
@@ -47,32 +26,11 @@ use DateTime;
  * @ORM\Entity()
  * @ORM\Table(name="oro_user")
  * @ORM\HasLifecycleCallbacks()
- * @Oro\Loggable
- * @Config(
- *      routeName="oro_user_index",
- *      routeView="oro_user_view",
- *      defaultValues={
- *          "entity"={"icon"="icon-user", "label"="User", "plural_label"="Users"},
- *          "ownership"={
- *              "owner_type"="BUSINESS_UNIT",
- *              "owner_field_name"="owner",
- *              "owner_column_name"="business_unit_owner_id"
- *          },
- *          "security"={
- *              "type"="ACL",
- *              "group_name"=""
- *          }
- *      }
- * )
  */
 class User implements
     AdvancedUserInterface,
     \Serializable,
     EntityUploadedImageInterface,
-    Taggable,
-    EmailOwnerInterface,
-    EmailHolderInterface,
-    ImapConfigurationOwnerInterface,
     FullNameInterface
 {
     const ROLE_DEFAULT   = 'ROLE_USER';
@@ -83,7 +41,6 @@ class User implements
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Soap\ComplexType("int", nillable=true)
      * @Type("integer")
      */
     protected $id;
@@ -92,9 +49,7 @@ class User implements
      * @var string
      *
      * @ORM\Column(type="string", length=255, unique=true)
-     * @Soap\ComplexType("string")
      * @Type("string")
-     * @Oro\Versioned
      */
     protected $username;
 
@@ -102,9 +57,7 @@ class User implements
      * @var string
      *
      * @ORM\Column(type="string", length=255, unique=true)
-     * @Soap\ComplexType("string")
      * @Type("string")
-     * @Oro\Versioned
      */
     protected $email;
 
@@ -114,9 +67,7 @@ class User implements
      * @var string
      *
      * @ORM\Column(name="name_prefix", type="string", length=255, nullable=true)
-     * @Soap\ComplexType("string", nillable=true)
      * @Type("string")
-     * @Oro\Versioned
      */
     protected $namePrefix;
 
@@ -126,9 +77,7 @@ class User implements
      * @var string
      *
      * @ORM\Column(name="first_name", type="string", length=255, nullable=true)
-     * @Soap\ComplexType("string")
      * @Type("string")
-     * @Oro\Versioned
      */
     protected $firstName;
 
@@ -138,9 +87,7 @@ class User implements
      * @var string
      *
      * @ORM\Column(name="middle_name", type="string", length=255, nullable=true)
-     * @Soap\ComplexType("string", nillable=true)
      * @Type("string")
-     * @Oro\Versioned
      */
     protected $middleName;
 
@@ -150,9 +97,7 @@ class User implements
      * @var string
      *
      * @ORM\Column(name="last_name", type="string", length=255, nullable=true)
-     * @Soap\ComplexType("string")
      * @Type("string")
-     * @Oro\Versioned
      */
     protected $lastName;
 
@@ -162,9 +107,7 @@ class User implements
      * @var string
      *
      * @ORM\Column(name="name_suffix", type="string", length=255, nullable=true)
-     * @Soap\ComplexType("string", nillable=true)
      * @Type("string")
-     * @Oro\Versioned
      */
     protected $nameSuffix;
 
@@ -172,9 +115,7 @@ class User implements
      * @var DateTime
      *
      * @ORM\Column(name="birthday", type="date", nullable=true)
-     * @Soap\ComplexType("date", nillable=true)
      * @Type("date")
-     * @Oro\Versioned
      */
     protected $birthday;
 
@@ -201,9 +142,7 @@ class User implements
      * @var boolean
      *
      * @ORM\Column(type="boolean")
-     * @Soap\ComplexType("boolean")
      * @Type("boolean")
-     * @Oro\Versioned
      */
     protected $enabled = true;
 
@@ -232,7 +171,6 @@ class User implements
      *
      * @var string
      *
-     * @Soap\ComplexType("string", nillable=true)
      * @Exclude
      */
     protected $plainPassword;
@@ -259,7 +197,6 @@ class User implements
      * @var DateTime
      *
      * @ORM\Column(name="last_login", type="datetime", nullable=true)
-     * @Soap\ComplexType("dateTime", nillable=true)
      * @Type("dateTime")
      */
     protected $lastLogin;
@@ -273,14 +210,6 @@ class User implements
     protected $loginCount;
 
     /**
-     * @var BusinessUnit
-     * @ORM\ManyToOne(targetEntity="Oro\Bundle\OrganizationBundle\Entity\BusinessUnit", cascade={"persist"})
-     * @ORM\JoinColumn(name="business_unit_owner_id", referencedColumnName="id", onDelete="SET NULL")
-     * @Soap\ComplexType("string", nillable=true)
-     */
-    protected $owner;
-
-    /**
      * @var Role[]
      *
      * @ORM\ManyToMany(targetEntity="Role")
@@ -288,9 +217,7 @@ class User implements
      *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id", onDelete="CASCADE")}
      * )
-     * @Soap\ComplexType("int[]", nillable=true)
      * @Exclude
-     * @Oro\Versioned("getLabel")
      */
     protected $roles;
 
@@ -302,9 +229,7 @@ class User implements
      *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id", onDelete="CASCADE")}
      * )
-     * @Soap\ComplexType("int[]", nillable=true)
      * @Exclude
-     * @Oro\Versioned("getName")
      */
     protected $groups;
 
@@ -332,43 +257,6 @@ class User implements
     protected $currentStatus;
 
     /**
-     * @var Email[]
-     *
-     * @ORM\OneToMany(targetEntity="Email", mappedBy="user", orphanRemoval=true, cascade={"persist"})
-     */
-    protected $emails;
-
-    /**
-     * @var Tag[]
-     *
-     */
-    protected $tags;
-
-    /**
-     * @var BusinessUnit[]
-     *
-     * @ORM\ManyToMany(targetEntity="Oro\Bundle\OrganizationBundle\Entity\BusinessUnit", inversedBy="users")
-     * @ORM\JoinTable(name="oro_user_business_unit",
-     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="business_unit_id", referencedColumnName="id", onDelete="CASCADE")}
-     * )
-     * @Exclude
-     * @Oro\Versioned("getName")
-     */
-    protected $businessUnits;
-
-    /**
-     * @var ImapEmailOrigin
-     *
-     * @ORM\OneToOne(
-     *     targetEntity="Oro\Bundle\ImapBundle\Entity\ImapEmailOrigin", cascade={"all"}
-     * )
-     * @ORM\JoinColumn(name="imap_configuration_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
-     * @Exclude
-     */
-    protected $imapConfiguration;
-
-    /**
      * @var \DateTime $createdAt
      *
      * @ORM\Column(type="datetime")
@@ -384,12 +272,10 @@ class User implements
 
     public function __construct()
     {
-        $this->salt            = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
-        $this->roles           = new ArrayCollection();
-        $this->groups          = new ArrayCollection();
-        $this->statuses        = new ArrayCollection();
-        $this->emails          = new ArrayCollection();
-        $this->businessUnits   = new ArrayCollection();
+        $this->salt     = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
+        $this->roles    = new ArrayCollection();
+        $this->groups   = new ArrayCollection();
+        $this->statuses = new ArrayCollection();
     }
 
     /**
@@ -445,16 +331,6 @@ class User implements
     public function getClass()
     {
         return 'Oro\Bundle\UserBundle\Entity\User';
-    }
-
-    /**
-     * Get name of field contains the primary email address
-     *
-     * @return string
-     */
-    public function getPrimaryEmailField()
-    {
-        return 'email';
     }
 
     /**
@@ -1251,44 +1127,6 @@ class User implements
     }
 
     /**
-     * Get User Emails
-     *
-     * @return Email[]
-     */
-    public function getEmails()
-    {
-        return $this->emails;
-    }
-
-    /**
-     * Add Email to User
-     *
-     * @param  Email $email
-     * @return User
-     */
-    public function addEmail(Email $email)
-    {
-        $this->emails[] = $email;
-
-        $email->setUser($this);
-
-        return $this;
-    }
-
-    /**
-     * Delete Email from User
-     *
-     * @param  Email $email
-     * @return User
-     */
-    public function removeEmail(Email $email)
-    {
-        $this->emails->removeElement($email);
-
-        return $this;
-    }
-
-    /**
      * Get the relative directory path to user avatar
      *
      * @param  bool   $forWeb
@@ -1308,135 +1146,20 @@ class User implements
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function getTaggableId()
-    {
-        return $this->getId();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getTags()
-    {
-        $this->tags = $this->tags ?: new ArrayCollection();
-
-        return $this->tags;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setTags($tags)
-    {
-        $this->tags = $tags;
-
-        return $this;
-    }
-
-    /**
-     * @return ArrayCollection
-     */
-    public function getBusinessUnits()
-    {
-        $this->businessUnits = $this->businessUnits ?: new ArrayCollection();
-
-        return $this->businessUnits;
-    }
-
-    /**
-     * @param ArrayCollection $businessUnits
-     * @return User
-     */
-    public function setBusinessUnits($businessUnits)
-    {
-        $this->businessUnits = $businessUnits;
-
-        return $this;
-    }
-
-    /**
-     * @param  BusinessUnit $businessUnit
-     * @return User
-     */
-    public function addBusinessUnit(BusinessUnit $businessUnit)
-    {
-        if (!$this->getBusinessUnits()->contains($businessUnit)) {
-            $this->getBusinessUnits()->add($businessUnit);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param  BusinessUnit $businessUnit
-     * @return User
-     */
-    public function removeBusinessUnit(BusinessUnit $businessUnit)
-    {
-        if ($this->getBusinessUnits()->contains($businessUnit)) {
-            $this->getBusinessUnits()->removeElement($businessUnit);
-        }
-
-        return $this;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getImapConfiguration()
-    {
-        return $this->imapConfiguration;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setImapConfiguration(ImapEmailOrigin $imapConfiguration = null)
-    {
-        $this->imapConfiguration = $imapConfiguration;
-
-        return $this;
-    }
-
-    /**
-     * @return BusinessUnit
-     */
-    public function getOwner()
-    {
-        return $this->owner;
-    }
-
-    /**
-     * @param BusinessUnit $owningBusinessUnit
-     * @return User
-     */
-    public function setOwner($owningBusinessUnit)
-    {
-        $this->owner = $owningBusinessUnit;
-
-        return $this;
-    }
-
-    /**
      * @var Pim\Bundle\CatalogBundle\Entity\Locale
      * @ORM\ManyToOne(targetEntity="Pim\Bundle\CatalogBundle\Entity\Locale")
-     * @Soap\ComplexType("string", nillable=true)
      */
     protected $catalogLocale;
 
     /**
      * @var Pim\Bundle\CatalogBundle\Entity\Channel
      * @ORM\ManyToOne(targetEntity="Pim\Bundle\CatalogBundle\Entity\Channel")
-     * @Soap\ComplexType("string", nillable=true)
      */
     protected $catalogScope;
 
     /**
      * @var Pim\Bundle\CatalogBundle\Model\CategoryInterface
      * @ORM\ManyToOne(targetEntity="Pim\Bundle\CatalogBundle\Model\CategoryInterface")
-     * @Soap\ComplexType("string", nillable=true)
      */
     protected $defaultTree;
 

@@ -9,30 +9,11 @@ use Doctrine\Common\Collections\Collection;
 
 use JMS\Serializer\Annotation\Type;
 
-use BeSimple\SoapBundle\ServiceDefinition\Annotation as Soap;
-
-use Oro\Bundle\OrganizationBundle\Entity\BusinessUnit;
-use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
-
 /**
  * Role Entity
  *
  * @ORM\Entity(repositoryClass="Oro\Bundle\UserBundle\Entity\Repository\RoleRepository")
  * @ORM\Table(name="oro_access_role")
- * @Config(
- *  defaultValues={
- *      "entity"={"label"="Role", "plural_label"="Roles"},
- *      "ownership"={
- *          "owner_type"="BUSINESS_UNIT",
- *          "owner_field_name"="owner",
- *          "owner_column_name"="business_unit_owner_id"
- *      },
- *      "security"={
- *          "type"="ACL",
- *          "group_name"=""
- *      }
- *  }
- * )
  */
 class Role extends BaseRole
 {
@@ -42,7 +23,6 @@ class Role extends BaseRole
      * @ORM\Id
      * @ORM\Column(type="smallint", name="id")
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Soap\ComplexType("int", nillable=true)
      * @Type("integer")
      */
     protected $id;
@@ -59,18 +39,9 @@ class Role extends BaseRole
      * @var string
      *
      * @ORM\Column(type="string", length=30)
-     * @Soap\ComplexType("string")
      * @Type("string")
      */
     protected $label;
-
-    /**
-     * @var BusinessUnit
-     * @ORM\ManyToOne(targetEntity="Oro\Bundle\OrganizationBundle\Entity\BusinessUnit")
-     * @ORM\JoinColumn(name="business_unit_owner_id", referencedColumnName="id", onDelete="SET NULL")
-     * @Soap\ComplexType("string", nillable=true)
-     */
-    protected $owner;
 
     /**
      * Populate the role field
@@ -153,24 +124,5 @@ class Role extends BaseRole
     public function __toString()
     {
         return (string) $this->role;
-    }
-
-    /**
-     * @return BusinessUnit
-     */
-    public function getOwner()
-    {
-        return $this->owner;
-    }
-
-    /**
-     * @param BusinessUnit $owningBusinessUnit
-     * @return Role
-     */
-    public function setOwner($owningBusinessUnit)
-    {
-        $this->owner = $owningBusinessUnit;
-
-        return $this;
     }
 }
