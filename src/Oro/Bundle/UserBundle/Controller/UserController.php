@@ -18,12 +18,9 @@ use Oro\Bundle\UserBundle\Entity\User;
 use Oro\Bundle\UserBundle\Entity\UserApi;
 use Oro\Bundle\UserBundle\Autocomplete\UserSearchHandler;
 
-use Oro\Bundle\OrganizationBundle\Entity\Manager\BusinessUnitManager;
 use Oro\Bundle\DataGridBundle\Datagrid\RequestParameters;
 
 use Oro\Bundle\EntityConfigBundle\Config\ConfigInterface;
-use Oro\Bundle\EntityConfigBundle\Entity\OptionSetRelation;
-use Oro\Bundle\EntityConfigBundle\Entity\Repository\OptionSetRelationRepository;
 use Oro\Bundle\EntityConfigBundle\Metadata\EntityMetadata;
 
 class UserController extends Controller
@@ -140,6 +137,45 @@ class UserController extends Controller
     }
 
     /**
+     * Delete user
+     *
+     * @Route(
+     *      "/delete/{id}",
+     *      name="oro_user_user_delete",
+     *      requirements={"id"="\d+"},
+     *      methods="DELETE"
+     * )
+     * @Acl(
+     *      id="oro_user_user_delete",
+     *      type="entity",
+     *      class="OroUserBundle:User",
+     *      permission="DELETE"
+     * )
+     */
+    public function deleteAction($id)
+    {
+        $securityToken = $this->get('security.context')->getToken();
+        $currentUser = $securityToken ? $securityToken->getUser() : null;
+        if (is_object($currentUser) && $currentUser->getId() != $id) {
+            $em = $this->get('doctrine.orm.entity_manager');
+            $userClass = $this->container->getParameter('oro_user.entity.class');
+            $user = $em->getRepository($userClass)->find($id);
+
+            if (!$user) {
+                throw $this->createNotFoundException(sprintf('User with id %d could not be found.', $id));
+            }
+
+            $em->remove($user);
+            $em->flush();
+
+            return new JsonResponse('', 204);
+        } else {
+
+            return new JsonResponse('', 403);
+        }
+    }
+
+    /**
      * @param User $entity
      * @param string $updateRoute
      * @param array $viewRoute
@@ -172,7 +208,6 @@ class UserController extends Controller
 
         return array(
             'form' => $this->get('oro_user.form.user')->createView(),
-            'businessUnits' => $this->getBusinessUnitManager()->getBusinessUnitsTree($entity),
             'editRoute' => $updateRoute
         );
     }
@@ -194,13 +229,5 @@ class UserController extends Controller
         }
 
         return $output;
-    }
-
-    /**
-     * @return BusinessUnitManager
-     */
-    protected function getBusinessUnitManager()
-    {
-        return $this->get('oro_organization.business_unit_manager');
     }
 }

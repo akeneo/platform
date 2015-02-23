@@ -8,8 +8,6 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
-use Oro\Bundle\EntityBundle\Exception\RuntimeException;
-
 /**
  * This is the class that loads and manages your bundle configuration
  */
@@ -25,7 +23,5 @@ class OroEntityExtension extends Extension
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('orm.yml');
-        $loader->load('form_type.yml');
-        $loader->load('services.yml');
     }
 }
