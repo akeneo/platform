@@ -1146,14 +1146,14 @@ class User implements
     }
 
     /**
-     * @var Pim\Bundle\CatalogBundle\Entity\Locale
-     * @ORM\ManyToOne(targetEntity="Pim\Bundle\CatalogBundle\Entity\Locale")
+     * @var Pim\Bundle\CatalogBundle\Model\Locale
+     * @ORM\ManyToOne(targetEntity="Pim\Bundle\CatalogBundle\Model\Locale")
      */
     protected $catalogLocale;
 
     /**
-     * @var Pim\Bundle\CatalogBundle\Entity\Channel
-     * @ORM\ManyToOne(targetEntity="Pim\Bundle\CatalogBundle\Entity\Channel")
+     * @var Pim\Bundle\CatalogBundle\Model\Channel
+     * @ORM\ManyToOne(targetEntity="Pim\Bundle\CatalogBundle\Model\Channel")
      */
     protected $catalogScope;
 
