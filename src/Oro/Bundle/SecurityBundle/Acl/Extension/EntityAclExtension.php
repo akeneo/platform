@@ -10,7 +10,7 @@ use Symfony\Component\Security\Acl\Model\ObjectIdentityInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Util\ClassUtils;
 use Oro\Bundle\SecurityBundle\Acl\Domain\ObjectIdAccessor;
-use Oro\Bundle\EntityBundle\ORM\EntityClassResolver;
+use Pim\Bundle\EntityBundle\ORM\EntityClassResolver;
 use Oro\Bundle\SecurityBundle\Owner\Metadata\OwnershipMetadata;
 use Oro\Bundle\SecurityBundle\Acl\Exception\InvalidAclMaskException;
 use Oro\Bundle\SecurityBundle\Acl\Domain\ObjectIdentityFactory;
@@ -114,23 +114,6 @@ class EntityAclExtension extends AbstractAclExtension
                 EntityMaskBuilder::MASK_SHARE_SYSTEM,
             ),
         );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getAccessLevelNames($object)
-    {
-        if ($this->getObjectClassName($object) === ObjectIdentityFactory::ROOT_IDENTITY_TYPE) {
-            $minLevel = AccessLevel::BASIC_LEVEL;
-        } else {
-            return array(
-                AccessLevel::NONE_LEVEL => AccessLevel::NONE_LEVEL_NAME,
-                AccessLevel::SYSTEM_LEVEL => AccessLevel::getAccessLevelName(AccessLevel::SYSTEM_LEVEL)
-            );
-        }
-
-        return AccessLevel::getAccessLevelNames($minLevel);
     }
 
     /**

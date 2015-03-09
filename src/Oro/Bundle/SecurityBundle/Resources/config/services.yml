@@ -17,7 +17,6 @@ parameters:
     oro_security.acl.object_identity_retrieval_strategy.class: Oro\Bundle\SecurityBundle\Acl\Domain\ObjectIdentityRetrievalStrategy
     oro_security.acl.object_id_accessor.class:                 Oro\Bundle\SecurityBundle\Acl\Domain\ObjectIdAccessor
 
-    oro_security.type.oro_acl_access_level_selector.class:     Oro\Bundle\SecurityBundle\Form\Type\AclAccessLevelSelectorType
     oro_security.type.oro_acl_label.class:                     Oro\Bundle\SecurityBundle\Form\Type\ObjectLabelType
 
     oro_security.action_metadata_provider.class:               Oro\Bundle\SecurityBundle\Metadata\ActionMetadataProvider
@@ -35,8 +34,6 @@ parameters:
     oro_security.listener.controller.class:                    Oro\Bundle\SecurityBundle\EventListener\ControllerListener
 
     oro_security.twig.security_extension:                      Oro\Bundle\SecurityBundle\Twig\OroSecurityExtension
-
-    oro_security.acl_helper.class:                             Oro\Bundle\SecurityBundle\ORM\Walker\AclHelper
 
 services:
     oro_security.security_facade:
@@ -138,11 +135,6 @@ services:
         public: false
         class: %oro_security.acl.object_id_accessor.class%
 
-    oro_security.form.type.oro_acl_access_level_selector:
-        class: %oro_security.type.oro_acl_access_level_selector.class%
-        tags:
-            - { name: form.type, alias: oro_acl_access_level_selector }
-
     oro_security.form.type.object_label_type:
         class: %oro_security.type.oro_acl_label.class%
         tags:
@@ -235,6 +227,3 @@ services:
             - @oro_security.security_facade
         tags:
             - { name: twig.extension }
-
-    oro_security.acl_helper:
-        class: %oro_security.acl_helper.class%
