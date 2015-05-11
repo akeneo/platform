@@ -24,7 +24,7 @@
                                     {% if breadcrumbs.indexLabel is defined %}
                                     <div class="sub-title">
                                     {%- if breadcrumbs.indexPath is defined -%}
-                                        <a href="{{ breadcrumbs.indexPath }}">{{ breadcrumbs.indexLabel|trans }}</a>
+                                        <a href="#{{ breadcrumbs.indexPath }}">{{ breadcrumbs.indexLabel|trans }}</a>
                                     {%- else -%}
                                         {{ breadcrumbs.indexLabel|trans }}
                                     {%- endif -%}
