@@ -2,6 +2,7 @@
 
 namespace Oro\Bundle\UserBundle\Entity;
 
+use Pim\Bundle\UserBundle\Model\UserInterface;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -31,7 +32,8 @@ class User implements
     AdvancedUserInterface,
     \Serializable,
     EntityUploadedImageInterface,
-    FullNameInterface
+    FullNameInterface,
+    UserInterface
 {
     const ROLE_DEFAULT   = 'ROLE_USER';
     const GROUP_DEFAULT  = 'All';
@@ -270,14 +272,14 @@ class User implements
     public function serialize()
     {
         return serialize(
-            array(
+            [
                 $this->password,
                 $this->salt,
                 $this->username,
                 $this->enabled,
                 $this->confirmationToken,
                 $this->id,
-            )
+            ]
         );
     }
 
@@ -961,7 +963,7 @@ class User implements
      */
     public function getGroupNames()
     {
-        $names = array();
+        $names = [];
 
         /** @var Group $group */
         foreach ($this->getGroups() as $group) {
@@ -1004,6 +1006,14 @@ class User implements
         }
 
         return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getFullName()
+    {
+        return sprintf('%s %s', $this->getFirstName(), $this->getLastName());
     }
 
     /**
