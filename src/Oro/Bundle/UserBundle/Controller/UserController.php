@@ -4,11 +4,11 @@ namespace Oro\Bundle\UserBundle\Controller;
 
 use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\PersistentCollection;
+use Pim\Bundle\UserBundle\Entity\User;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Oro\Bundle\SecurityBundle\Annotation\AclAncestor;
-use Oro\Bundle\UserBundle\Entity\User;
 use Oro\Bundle\UserBundle\Entity\UserApi;
 use Oro\Bundle\UserBundle\Autocomplete\UserSearchHandler;
 use Oro\Bundle\DataGridBundle\Datagrid\RequestParameters;
@@ -124,15 +124,15 @@ class UserController extends Controller
 
             return new JsonResponse('', 204);
         } else {
-
             return new JsonResponse('', 403);
         }
     }
 
+
     /**
-     * @param User $entity
+     * @param User   $entity
      * @param string $updateRoute
-     * @param array $viewRoute
+     * @param array  $viewRoute
      * @return array
      */
     protected function update(User $entity, $updateRoute = '', $viewRoute = array())
@@ -167,7 +167,7 @@ class UserController extends Controller
     }
 
     /**
-     * @param User $user
+     * @param User   $user
      * @param string $editRoute
      * @return array
      */
