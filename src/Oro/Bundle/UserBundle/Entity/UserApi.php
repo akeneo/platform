@@ -3,6 +3,7 @@
 namespace Oro\Bundle\UserBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Pim\Bundle\UserBundle\Entity\UserInterface;
 
 /**
  * @ORM\Table(name="oro_user_api")
@@ -18,9 +19,9 @@ class UserApi
     protected $id;
 
     /**
-     * @var User
+     * @var UserInterface
      *
-     * @ORM\OneToOne(targetEntity="User", inversedBy="api", fetch="LAZY")
+     * @ORM\OneToOne(targetEntity="\Pim\Bundle\UserBundle\Entity\UserInterface", inversedBy="api", fetch="LAZY")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
      */
     protected $user;
@@ -69,11 +70,11 @@ class UserApi
     /**
      * Set user
      *
-     * @param User $user
+     * @param UserInterface $user
      *
      * @return UserApi
      */
-    public function setUser(User $user)
+    public function setUser(UserInterface $user)
     {
         $this->user = $user;
 
@@ -83,7 +84,7 @@ class UserApi
     /**
      * Get user
      *
-     * @return User
+     * @return UserInterface
      */
     public function getUser()
     {

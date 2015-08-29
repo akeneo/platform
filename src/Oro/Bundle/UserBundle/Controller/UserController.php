@@ -4,16 +4,17 @@ namespace Oro\Bundle\UserBundle\Controller;
 
 use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\PersistentCollection;
+use Pim\Bundle\UserBundle\Entity\User;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Oro\Bundle\SecurityBundle\Annotation\AclAncestor;
-use Oro\Bundle\UserBundle\Entity\User;
 use Oro\Bundle\UserBundle\Entity\UserApi;
 use Oro\Bundle\UserBundle\Autocomplete\UserSearchHandler;
 use Oro\Bundle\DataGridBundle\Datagrid\RequestParameters;
 use Oro\Bundle\EntityConfigBundle\Config\ConfigInterface;
 use Oro\Bundle\EntityConfigBundle\Metadata\EntityMetadata;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class UserController extends Controller
 {
@@ -21,8 +22,9 @@ class UserController extends Controller
      * @Template
      * @AclAncestor("pim_user_user_index")
      */
-    public function viewAction(User $user)
+    public function viewAction($id)
     {
+        $user = $this->get('pim_user.repository.user')->find($id);
         return $this->view($user);
     }
 
@@ -87,9 +89,9 @@ class UserController extends Controller
      * @Template
      * @AclAncestor("pim_user_user_edit")
      */
-    public function updateAction(User $entity)
+    public function updateAction($id)
     {
-        return $this->update($entity);
+        return $this->update($id);
     }
 
     /**
@@ -124,20 +126,24 @@ class UserController extends Controller
 
             return new JsonResponse('', 204);
         } else {
-
             return new JsonResponse('', 403);
         }
     }
 
+
     /**
-     * @param User $entity
+     * @param mixed  $user
      * @param string $updateRoute
-     * @param array $viewRoute
+     * @param array  $viewRoute
+     *
      * @return array
      */
-    protected function update(User $entity, $updateRoute = '', $viewRoute = array())
+    protected function update($user, $updateRoute = '', $viewRoute = [])
     {
-        if ($this->get('oro_user.form.handler.user')->process($entity)) {
+        if (!$user instanceof UserInterface) {
+            $user = $this->get('pim_user.repository.user')->find($user);
+        }
+        if ($this->get('oro_user.form.handler.user')->process($user)) {
             $this->get('session')->getFlashBag()->add(
                 'success',
                 $this->get('translator')->trans('oro.user.controller.user.message.saved')
@@ -148,13 +154,13 @@ class UserController extends Controller
             } else {
                 $closeButtonRoute = array(
                     'route' => 'oro_user_view',
-                    'parameters' => array('id' => $entity->getId())
+                    'parameters' => array('id' => $user->getId())
                 );
             }
             return $this->get('oro_ui.router')->actionRedirect(
                 array(
                     'route' => 'oro_user_update',
-                    'parameters' => array('id' => $entity->getId()),
+                    'parameters' => array('id' => $user->getId()),
                 ),
                 $closeButtonRoute
             );
@@ -167,8 +173,9 @@ class UserController extends Controller
     }
 
     /**
-     * @param User $user
+     * @param User   $user
      * @param string $editRoute
+     *
      * @return array
      */
     protected function view(User $user, $editRoute = '')
