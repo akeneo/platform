@@ -6,6 +6,7 @@ use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\PersistentCollection;
 use Pim\Bundle\UserBundle\Entity\User;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Oro\Bundle\SecurityBundle\Annotation\AclAncestor;
@@ -50,9 +51,17 @@ class UserController extends Controller
 
     /**
      * @AclAncestor("pim_user_user_edit")
+     *
+     * @param int $id
+     *
+     * @return JsonResponse|Response
      */
-    public function apigenAction(User $user)
+    public function apigenAction($id)
     {
+        $userRepository = $this->container->get('pim_user.repository.user');
+
+        $user = $userRepository->findOneBy(['id' => $id]);
+
         if (!$api = $user->getApi()) {
             $api = new UserApi();
         }
