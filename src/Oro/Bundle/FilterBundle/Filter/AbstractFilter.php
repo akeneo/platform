@@ -2,7 +2,9 @@
 
 namespace Oro\Bundle\FilterBundle\Filter;
 
+use Symfony\Component\Form\ChoiceList\View\ChoiceView;
 use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Oro\Bundle\FilterBundle\Datasource\FilterDatasourceAdapterInterface;
 
@@ -22,6 +24,9 @@ abstract class AbstractFilter implements FilterInterface
 
     /** @var Form */
     protected $form;
+
+    /** @var FormBuilderInterface */
+    protected $formBuilder;
 
     /**
      * Constructor
@@ -61,6 +66,22 @@ abstract class AbstractFilter implements FilterInterface
     }
 
     /**
+     * @return FormBuilderInterface
+     */
+    protected function getFormBuilder()
+    {
+        if (!$this->formBuilder) {
+            $this->formBuilder = $this->formFactory->createBuilder(
+                $this->getFormType(),
+                [],
+                array_merge($this->getOr(FilterUtility::FORM_OPTIONS_KEY, []), ['csrf_protection' => false])
+            );
+        }
+
+        return $this->formBuilder;
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function getName()
@@ -73,14 +94,19 @@ abstract class AbstractFilter implements FilterInterface
      */
     public function getMetadata()
     {
-        $formView = $this->getForm()->createView();
-        $typeView = $formView->children['type'];
+        $formBuilderType = $this->getFormBuilder()->get('type');
+        $operatorChoices = $formBuilderType->getOption('choices');
+
+        $choices = [];
+        foreach ($operatorChoices as $key => $choice) {
+            $choices[] = new ChoiceView($key, (string) $key, $choice);
+        }
 
         $defaultMetadata = [
             'name'                     => $this->getName(),
             // use filter name if label not set
             'label'                    => ucfirst($this->name),
-            'choices'                  => $typeView->vars['choices'],
+            'choices'                  => $choices,
             FilterUtility::ENABLED_KEY => true,
         ];
 

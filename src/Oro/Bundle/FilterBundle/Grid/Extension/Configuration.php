@@ -9,6 +9,7 @@ use Oro\Bundle\FilterBundle\Filter\FilterUtility;
 
 class Configuration implements ConfigurationInterface
 {
+    const FILTERS_KEY          = 'filters';
     const FILTERS_PATH         = '[filters]';
     const COLUMNS_PATH         = '[filters][columns]';
     const DEFAULT_FILTERS_PATH = '[filters][default]';
